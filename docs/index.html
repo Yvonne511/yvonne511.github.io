@@ -3,35 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yvonne Wu's Academic Portfolio</title>
+    <title>Yvonne Wu's Portfolio</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* *
+        { border:1px solid red } */
+    </style>
 </head>
-<body>
-    <header class="text-gray-600 body-font">
-        <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-            <nav class="flex lg:w-2/5 flex-wrap items-center text-base md:ml-auto">
-                <a class="mr-5 hover:text-gray-900">Home</a>
-                <a class="mr-5 hover:text-gray-900">Projects</a>
-                <a class="hover:text-gray-900">Research Journal</a>
-            </nav>
-        </div>
+<body class="bg-gray-100 text-gray-900 tracking-wider leading-normal">
+    <!-- Header Section -->
+    <header class="bg-gray-400 text-left py-2 px-4 text-xl">
+        <h1>Yvonne Wu (Yiyi Wu)</h1>
     </header>
-    <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
-            <div class="flex flex-wrap w-full mb-20">
-                <div class="lg:w-1/2 w-full mb-6 lg:mb-0">
-                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">Yvonne Wu's Academic Portfolio</h1>
-                    <div class="h-1 w-20 bg-indigo-500 rounded"></div>
-                </div>
-                <p class="lg:w-1/2 w-full leading-relaxed text-gray-500">Welcome to my academic portfolio. Here, you will find my projects, research journal logs, and more about my journey in the world of robotics and machine learning.</p>
-            </div>
+
+    <!-- Introduction Section -->
+    <section class="flex flex-col sm:flex-row items-start justify-center p-8">
+        <img src="000016.BMP" alt="Yvonne Wu Photography" class="w-full sm:w-1/2 rounded-lg shadow-md mb-4 sm:mb-0">
+        <div class="w-full sm:w-1/2 px-6">
+            <p>I am currently a first-year master's student at NYU Courant, specializing in Computer Science. My interest areas include robotics and robot learning.</p>
+            <!-- Buttons for Resume, LinkedIn, Email, and Google Scholar -->
+            <div class="flex flex-wrap justify-start p-2">
+                <a href="resume.pdf" class="btn flex items-center group relative">
+                    <i class="fa fa-file-text-o mr-2 p-2" aria-hidden="true"></i>
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">Resume</span>
+                </a>
+                <a href="https://www.linkedin.com/in/yvonne-wu-yiyi/" class="btn flex items-center group relative">
+                    <i class="fa fa-linkedin mr-2 p-2" aria-hidden="true"></i>
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">LinkedIn</span>
+                </a>
+                <a href="mailto:yw4142@nyu.edu.com" class="btn flex items-center group relative">
+                    <i class="fa fa-envelope-o mr-2 p-2" aria-hidden="true"></i>
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">Email</span>
+                </a>
+                <a href="https://scholar.google.com/citations?user=MSk8dIEAAAAJ&hl=en" class="btn flex items-center group relative">
+                    <i class="fa fa-graduation-cap mr-2 p-2" aria-hidden="true"></i>
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">Google Scholar</span>
+                </a>
+            </div>                                
         </div>
     </section>
-    <footer class="text-gray-600 body-font">
-        <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
-            <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">© 2024 Yvonne Wu — All rights reserved
-            </p>
-        </div>
+
+    <!-- Links Section -->
+    <div class="text-center p-8">
+        <a href="#notes" class="p-4">Notes</a>
+        <a href="#research" class="p-4">Research Log</a>
+        <a href="#projects" class="p-4">Projects</a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center p-2">
+        <p>© 2024 Yvonne Wu</p>
     </footer>
 </body>
 </html>

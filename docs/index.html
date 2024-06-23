@@ -11,8 +11,8 @@
         body {
             font-family: 'Montserrat', sans-serif;
         }
-        /* *
-        { border:1px solid red } */
+        *
+        { border:1px solid red }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900 tracking-wider leading-normal">
@@ -49,11 +49,27 @@
     </section>
 
     <!-- Links Section -->
-    <div class="text-center p-8">
-        <a href="#notes" class="p-4">Notes</a>
-        <a href="#research" class="p-4">Research Log</a>
-        <a href="#projects" class="p-4">Projects</a>
+    <div class="w-full">
+        <!-- Notes Section -->
+        <section id="notes" class="flex flex-col bg-gray-200 p-4">
+            <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Notes</h2>
+            <a href="linearAlgebra/index.html" class="mb-2 ml-2 text-gray-600 hover:text-black">Linear Algebra</a>
+            <a href="robotKnmatcs/index.html" class="mb-2 ml-2 text-gray-600 hover:text-black">Robot Kinematics</a>
+        </section>
+    
+        <!-- Research Log Section -->
+        <section id="research" class="bg-gray-100 p-4">
+            <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Research Log</h2>
+            <!-- Content or links related to the Research Log -->
+        </section>
+    
+        <!-- Projects Section -->
+        <section id="projects" class="bg-gray-200 p-4">
+            <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Projects</h2>
+            <!-- Content or links related to Projects -->
+        </section>
     </div>
+    
 
     <!-- Footer -->
     <footer class="text-center p-2">

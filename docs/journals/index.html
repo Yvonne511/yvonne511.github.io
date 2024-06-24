@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal Entries</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="mx-auto px-4 py-8">
+        <h1 class="text-xl font-bold mb-4">Research Digests</h1>
+        <table class="table-auto border-collapse border border-gray-500 w-full" id="journalTable">
+            <thead>
+                <tr class="border-b border-gray-500">
+                    <th class="px-4 py-2">Section Name</th>
+                    <th class="px-4 py-2">Journal Title</th>
+                    <th class="px-4 py-2">Year</th>
+                    <th class="px-4 py-2">Methodology</th>
+                    <th class="px-4 py-2">Conclusions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Content populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Function to fetch and populate the table with journal data
+        async function populateTable() {
+            try {
+                const response = await fetch('digests.json'); // Adjust path if necessary
+                const journalData = await response.json();
+
+                const tableBody = document.getElementById('tableBody');
+                journalData.forEach(entry => {
+                    const row = document.createElement('tr');
+
+                    //Section
+                    const sectionCell = document.createElement('td');
+                    sectionCell.textContent = entry.section;
+                    sectionCell.className = "border px-4 py-2 text-left align-top";
+                    //Title
+                    const titleCell = document.createElement('td');
+                    const link = document.createElement('a');
+                    link.href = entry.link;
+                    link.textContent = entry.title;
+                    link.className = "text-blue-400 hover:text-blue-600";
+                    titleCell.appendChild(link);
+                    titleCell.className = "border px-4 py-2 text-left align-top";
+                    //Year
+                    const yearCell = document.createElement('td');
+                    yearCell.textContent = entry.published_date;
+                    yearCell.className = "border px-4 py-2 text-left align-top";
+                    //Methodology
+                    const methodolCell = document.createElement('td');
+                    methodolCell.textContent = entry.description;
+                    methodolCell.className = "border px-4 py-2 text-left align-top";
+                    //Conclusion
+                    const conclCell = document.createElement('td');
+                    conclCell.textContent = entry.description;
+                    conclCell.className = "border px-4 py-2 text-left align-top";
+
+                    row.appendChild(sectionCell);
+                    row.appendChild(titleCell);
+                    row.appendChild(yearCell);
+                    row.appendChild(methodolCell);
+                    row.appendChild(conclCell);
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Failed to load journal data:', error);
+            }
+        }
+
+        // Call the function to populate the table when the document loads
+        document.addEventListener('DOMContentLoaded', populateTable);
+    </script>
+</body>
+</html>
+

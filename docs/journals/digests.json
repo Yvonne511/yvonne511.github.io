@@ -1,0 +1,79 @@
+[
+    {
+        "title": "OK-Robot: What Really Matters in Integrating Open-Knowledge Models for Robotics",
+        "link": "https://arxiv.org/pdf/2401.12202",
+        "section": "Integration and Application of Language Models in Robotics",
+        "published_date": "2024",
+        "description": "Focuses on key aspects in integrating open-knowledge models for robotics."
+    },
+    {
+        "title": "ChatGPT for Robotics",
+        "link": "https://www.microsoft.com/en-us/research/group/autonomous-systems-group-robotics/articles/chatgpt-for-robotics/",
+        "section": "Integration and Application of Language Models in Robotics",
+        "published_date": "2023",
+        "description": "Demonstrates the utility of ChatGPT in understanding and executing robotic tasks."
+    },
+    {
+        "title": "PaLM-E: An Embodied Multimodal Language Model",
+        "link": "https://palm-e.github.io/",
+        "section": "Integration and Application of Language Models in Robotics",
+        "published_date": "2023",
+        "description": "Development of a multimodal language model integrating visual and language inputs for robotic tasks."
+    },
+    {
+        "title": "Octo-Models",
+        "link": "https://octo-models.github.io/",
+        "section": "Multimodal Approaches and Advanced Systems",
+        "published_date": "2023",
+        "description": "Discusses various models and frameworks for robotics."
+    },
+    {
+        "title": "Robotics Transformer 1",
+        "link": "https://robotics-transformer1.github.io/",
+        "section": "Transformer Models in Robotics",
+        "published_date": "2023",
+        "description": "Explores the use of transformer models in robotic applications."
+    },
+    {
+        "title": "Robotics Transformer 2",
+        "link": "https://robotics-transformer2.github.io/",
+        "section": "Transformer Models in Robotics",
+        "published_date": "2023",
+        "description": "Continues the discussion on transformer models in robotics."
+    },
+    {
+        "title": "Say-Can",
+        "link": "https://say-can.github.io/",
+        "section": "Integration and Application of Language Models in Robotics",
+        "published_date": "2023",
+        "description": "Combines language understanding and task execution for robotic manipulation."
+    },
+    {
+        "title": "Transformer Models in Robotics",
+        "link": "https://arxiv.org/pdf/2402.10211",
+        "section": "Transformer Models in Robotics",
+        "published_date": "2024",
+        "description": "Latest research on transformer models in robotics focusing on applications and results."
+    },
+    {
+        "title": "Multimodal Robotics Approaches",
+        "link": "https://arxiv.org/pdf/2403.03181",
+        "section": "Multimodal Approaches and Advanced Systems",
+        "published_date": "2024",
+        "description": "Exploration of multimodal approaches in robotics, combining various sensor inputs for enhanced performance."
+    },
+    {
+        "title": "Robotics Systems",
+        "link": "https://arxiv.org/pdf/2312.07540",
+        "section": "Multimodal Approaches and Advanced Systems",
+        "published_date": "2023",
+        "description": "Comprehensive study on various systems used in robotics, discussing different architectures and applications."
+    },
+    {
+        "title": "Advanced Robotics",
+        "link": "https://arxiv.org/pdf/2311.16098",
+        "section": "Multimodal Approaches and Advanced Systems",
+        "published_date": "2023",
+        "description": "Advanced topics in robotics, including new methodologies and technologies."
+    }
+]

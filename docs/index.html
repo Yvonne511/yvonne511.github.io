@@ -95,8 +95,9 @@
                         articles.forEach(article => {
                             const listItem = document.createElement('li');
                             const link = document.createElement('a');
-                            link.href = article.link;
                             link.textContent = article.title;
+                            const sanitizedTitle = article.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                            link.href = `journals/index.html#${sanitizedTitle}`;
                             link.className = 'ml-5 text-gray-600 underline hover:text-black';
                             listItem.appendChild(link);
                             list.appendChild(listItem);

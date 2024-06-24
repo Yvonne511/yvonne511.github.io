@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal Entries</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-white">
     <div class="mx-auto px-4 py-8">
@@ -35,7 +40,8 @@
                 const tableBody = document.getElementById('tableBody');
                 journalData.forEach(entry => {
                     const row = document.createElement('tr');
-
+                    const sanitizedTitle = entry.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                    row.id = sanitizedTitle
                     //Section
                     const sectionCell = document.createElement('td');
                     sectionCell.textContent = entry.section;
@@ -73,8 +79,20 @@
             }
         }
 
-        // Call the function to populate the table when the document loads
-        document.addEventListener('DOMContentLoaded', populateTable);
+        function scrollToTarget() {
+            const hash = window.location.hash;
+            if (hash) {
+                const targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await populateTable(); // Assume this function loads and populates data
+            scrollToTarget();
+        });
     </script>
 </body>
 </html>

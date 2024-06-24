@@ -29,19 +29,19 @@
             <p>Outside of my academic pursuits, I love Italian food and am captivated by the rich culture and history of Florence.</p>
             <!-- Buttons for Resume, LinkedIn, Email, and Google Scholar -->
             <div class="flex flex-wrap justify-start p-2">
-                <a href="resume.pdf" class="btn flex items-center group relative">
+                <a href="resume.pdf" class="btn flex items-center group relative" target="_blank">
                     <i class="fa fa-file-text-o mr-2 p-2" aria-hidden="true"></i>
                     <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">Resume</span>
                 </a>
-                <a href="https://www.linkedin.com/in/yvonne-wu-yiyi/" class="btn flex items-center group relative">
+                <a href="https://www.linkedin.com/in/yvonne-wu-yiyi/" class="btn flex items-center group relative" target="_blank">
                     <i class="fa fa-linkedin mr-2 p-2" aria-hidden="true"></i>
                     <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">LinkedIn</span>
                 </a>
-                <a href="mailto:yw4142@nyu.edu.com" class="btn flex items-center group relative">
+                <a href="mailto:yw4142@nyu.edu.com" class="btn flex items-center group relative" target="_blank">
                     <i class="fa fa-envelope-o mr-2 p-2" aria-hidden="true"></i>
                     <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">Email</span>
                 </a>
-                <a href="https://scholar.google.com/citations?user=MSk8dIEAAAAJ&hl=en" class="btn flex items-center group relative">
+                <a href="https://scholar.google.com/citations?user=MSk8dIEAAAAJ&hl=en" class="btn flex items-center group relative" target="_blank">
                     <i class="fa fa-graduation-cap mr-2 p-2" aria-hidden="true"></i>
                     <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-5 left-1/2 transform -translate-x-1/2 p-1 text-xs whitespace-nowrap">Google Scholar</span>
                 </a>
@@ -58,17 +58,60 @@
             <a href="robotKnmatcs/index.html" class="mb-2 ml-2 text-gray-600 underline hover:text-black">Robot Kinematics</a>
         </section>
     
-        <!-- Research Log Section -->
-        <section id="research" class="bg-gray-100 p-4">
-            <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Research Digests</h2>
-            <!-- Content or links related to the Research Log -->
-        </section>
-    
         <!-- Projects Section -->
-        <section id="projects" class="bg-gray-200 p-4">
+        <section id="projects" class="bg-gray-100 p-4">
             <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Projects</h2>
             <!-- Content or links related to Projects -->
         </section>
+
+        <!-- Research Log Section -->
+        <section id="research" class="bg-gray-200 p-4">
+            <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Research Digests</h2>
+            <div id="researchContent" class="space-y-4"></div>
+        </section>
+        <script>
+            async function loadResearchData() {
+                try {
+                    const response = await fetch('journals/digests.json');
+                    const journalData = await response.json();
+                    const contentArea = document.getElementById('researchContent');
+    
+                    // Grouping data by sections
+                    const sections = journalData.reduce((acc, item) => {
+                        acc[item.section] = acc[item.section] || [];
+                        acc[item.section].push(item);
+                        return acc;
+                    }, {});
+    
+                    // Create HTML for each section
+                    for (const [section, articles] of Object.entries(sections)) {
+                        const sectionDiv = document.createElement('div');
+                        const sectionHeader = document.createElement('h3');
+                        sectionHeader.textContent = section;
+                        sectionHeader.className = 'mb-2 ml-2 text-gray-700';
+                        sectionDiv.appendChild(sectionHeader);
+    
+                        const list = document.createElement('ul');
+                        articles.forEach(article => {
+                            const listItem = document.createElement('li');
+                            const link = document.createElement('a');
+                            link.href = article.link;
+                            link.textContent = article.title;
+                            link.className = 'ml-5 text-gray-600 underline hover:text-black';
+                            listItem.appendChild(link);
+                            list.appendChild(listItem);
+                        });
+    
+                        sectionDiv.appendChild(list);
+                        contentArea.appendChild(sectionDiv);
+                    }
+                } catch (error) {
+                    console.error('Failed to load data:', error);
+                }
+            }
+    
+            document.addEventListener('DOMContentLoaded', loadResearchData);
+        </script>
     </div>
     
 

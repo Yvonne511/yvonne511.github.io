@@ -49,6 +49,7 @@
                     //Title
                     const titleCell = document.createElement('td');
                     const link = document.createElement('a');
+                    link.target = "_blank";
                     link.href = entry.link;
                     link.textContent = entry.title;
                     link.className = "text-blue-400 hover:text-blue-600";
@@ -60,11 +61,11 @@
                     yearCell.className = "border px-4 py-2 text-left align-top";
                     //Methodology
                     const methodolCell = document.createElement('td');
-                    methodolCell.textContent = entry.description;
+                    methodolCell.innerText = entry.description.join('\n');
                     methodolCell.className = "border px-4 py-2 text-left align-top";
                     //Conclusion
                     const conclCell = document.createElement('td');
-                    conclCell.textContent = entry.description;
+                    conclCell.innerText = entry.conclusion.join('\n');;
                     conclCell.className = "border px-4 py-2 text-left align-top";
 
                     row.appendChild(sectionCell);

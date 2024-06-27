@@ -4,27 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yvonne Wu's Portfolio</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+        * {
+            border: 1px solid red;
+        }
         body {
             font-family: 'Montserrat', sans-serif;
         }
-        /* *
-        { border:1px solid red } */
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900 tracking-wider leading-normal">
     <!-- Header Section -->
-    <header class="bg-gray-400 text-left py-2 px-4 text-xl">
+    <header class="bg-[#d8bfa8] text-left py-2 px-4 text-xl">
         <h1>Yvonne Wu (Yiyi Wu)</h1>
     </header>
 
     <!-- Introduction Section -->
-    <section class="flex flex-col sm:flex-row items-start justify-center p-8">
-        <img src="000016.BMP" alt="Yvonne Wu Photography" class="w-full sm:w-1/2 rounded-lg shadow-md mb-4 sm:mb-0">
-        <div class="w-full sm:w-1/2 px-6">
+    <section class="flex flex-col sm:space-x-20 sm:flex-row items-start justify-center p-8">
+        <img src="000016.BMP" alt="Yvonne Wu Photography" class="w-full sm:w-[35vw] rounded-lg shadow-md mb-4 sm:mb-0">
+        <div class="w-full sm:w-[35vw]">
             <p>I am currently pursuing a Master's degree in Computer Science at NYU Courant. My interest areas include home robot and robot learning.</p>
             <p>Outside of my academic pursuits, I love Italian food and am captivated by the rich culture and history of Florence.</p>
             <!-- Buttons for Resume, LinkedIn, Email, and Google Scholar -->
@@ -52,20 +54,20 @@
     <!-- Links Section -->
     <div class="w-full">
         <!-- Notes Section -->
-        <section id="notes" class="flex flex-col bg-gray-200 p-4">
+        <section id="notes" class="flex flex-col bg-[#d8bfa8]/25 p-4 sm:pl-10">
             <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Notes</h2>
-            <a href="linearAlgebra/index.html" class="mb-2 ml-2 text-gray-600 underline hover:text-black">Linear Algebra</a>
-            <a href="robotKnmatcs/index.html" class="mb-2 ml-2 text-gray-600 underline hover:text-black">Robot Kinematics</a>
+            <a href="linearAlgebra/index.html" class="mb-2 ml-4 text-gray-600 underline hover:text-black">Linear Algebra</a>
+            <a href="robotKnmatcs/index.html" class="mb-2 ml-4 text-gray-600 underline hover:text-black">Robot Kinematics</a>
         </section>
     
         <!-- Projects Section -->
-        <section id="projects" class="bg-gray-100 p-4">
+        <section id="projects" class="bg-gray-100 p-4 sm:pl-10">
             <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Projects</h2>
             <!-- Content or links related to Projects -->
         </section>
 
         <!-- Research Log Section -->
-        <section id="research" class="bg-gray-200 p-4">
+        <section id="research" class="bg-[#d8bfa8]/25 p-4 sm:pl-10">
             <h2 class="text-left text-xl font-medium mb-2 text-gray-800">Research Digests</h2>
             <div id="researchContent" class="space-y-4"></div>
         </section>
@@ -86,26 +88,30 @@
                     // Create HTML for each section
                     for (const [section, articles] of Object.entries(sections)) {
                         const sectionDiv = document.createElement('div');
+                        
                         const sectionHeader = document.createElement('h3');
                         sectionHeader.textContent = section;
-                        sectionHeader.className = 'mb-2 ml-2 text-gray-700';
+                        sectionHeader.className = 'mb-2 ml-4 text-gray-700';
                         sectionDiv.appendChild(sectionHeader);
-    
-                        const list = document.createElement('ul');
+
+                        const list = document.createElement('div');
                         articles.forEach(article => {
-                            const listItem = document.createElement('li');
+                            const listItem = document.createElement('div');
+                            
                             const link = document.createElement('a');
                             link.textContent = article.title;
                             const sanitizedTitle = article.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
                             link.href = `journals/index.html#${sanitizedTitle}`;
-                            link.className = 'ml-5 text-gray-600 underline hover:text-black';
+                            link.className = 'ml-8 block text-gray-600 underline hover:text-black text-sm sm:text-base';
+                            
                             listItem.appendChild(link);
                             list.appendChild(listItem);
                         });
-    
+
                         sectionDiv.appendChild(list);
                         contentArea.appendChild(sectionDiv);
-                    }
+                    }   
+
                 } catch (error) {
                     console.error('Failed to load data:', error);
                 }

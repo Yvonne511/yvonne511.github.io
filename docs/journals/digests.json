@@ -2,8 +2,8 @@
     {
         "title": "OK-Robot: What Really Matters in Integrating Open-Knowledge Models for Robotics",
         "link": "https://arxiv.org/pdf/2401.12202",
-        "section": "Language Models in Robotics",
-        "published_date": "2024",
+        "section": "Language Models",
+        "published_date": "2024-01",
         "description": [
             "Vision-Language Models (VLMs) - object detection",
             "LangSam, CLIP - semantic memory",
@@ -17,83 +17,91 @@
         ]
     },
     {
-        "title": "ChatGPT for Robotics",
+        "title": "ChatGPT for Robotics: Design Principles and Model Abilities",
         "link": "https://www.microsoft.com/en-us/research/group/autonomous-systems-group-robotics/articles/chatgpt-for-robotics/",
-        "section": "Language Models in Robotics",
-        "published_date": "2023",
+        "section": "Language Models",
+        "published_date": "2023-02",
         "description": ["Demonstrates the utility of ChatGPT in understanding and executing robotic tasks."],
         "conclusion": []
     },
     {
         "title": "PaLM-E: An Embodied Multimodal Language Model",
         "link": "https://palm-e.github.io/",
-        "section": "Language Models in Robotics",
-        "published_date": "2023",
+        "section": "Language Models",
+        "published_date": "2023-06",
         "description": ["Development of a multimodal language model integrating visual and language inputs for robotic tasks."],
         "conclusion": []
     },
     {
-        "title": "Octo-Models",
+        "title": "Octo: An Open-Source Generalist Robot Policy",
         "link": "https://octo-models.github.io/",
-        "section": "Multimodal Approaches and Advanced Systems",
-        "published_date": "2023",
+        "section": "Multimodal Approaches",
+        "published_date": "2024-05",
         "description": ["Discusses various models and frameworks for robotics."],
         "conclusion": []
     },
     {
-        "title": "Robotics Transformer 1",
+        "title": "RT-1: Robotics Transformer",
         "link": "https://robotics-transformer1.github.io/",
-        "section": "Transformer Models in Robotics",
-        "published_date": "2023",
+        "section": "Transformer Models",
+        "published_date": "2022-12",
         "description": ["Explores the use of transformer models in robotic applications."],
         "conclusion": []
     },
     {
-        "title": "Robotics Transformer 2",
+        "title": "RT-2: Vision-Language-Action Models",
         "link": "https://robotics-transformer2.github.io/",
-        "section": "Transformer Models in Robotics",
-        "published_date": "2023",
+        "section": "Transformer Models",
+        "published_date": "2023-07",
         "description": ["Continues the discussion on transformer models in robotics."],
         "conclusion": []
     },
     {
-        "title": "Say-Can",
+        "title": "Do As I Can, Not As I Say: Grounding Language in Robotic Affordances",
         "link": "https://say-can.github.io/",
-        "section": "Language Models in Robotics",
-        "published_date": "2023",
+        "section": "Language Models",
+        "published_date": "2022-04",
         "description": ["Combines language understanding and task execution for robotic manipulation."],
         "conclusion": []
     },
     {
-        "title": "Transformer Models in Robotics",
+        "title": "Hierarchical State Space Models for Continuous Sequence-to-Sequence Modeling",
         "link": "https://arxiv.org/pdf/2402.10211",
-        "section": "Transformer Models in Robotics",
-        "published_date": "2024",
+        "section": "Transformer Models",
+        "published_date": "2024-02",
         "description": ["Latest research on transformer models in robotics focusing on applications and results."],
         "conclusion": []
     },
     {
-        "title": "Multimodal Robotics Approaches",
+        "title": "Behavior Generation with Latent Actions",
         "link": "https://arxiv.org/pdf/2403.03181",
-        "section": "Multimodal Approaches and Advanced Systems",
-        "published_date": "2024",
+        "section": "Multimodal Approaches",
+        "published_date": "2024-05",
         "description": ["Exploration of multimodal approaches in robotics, combining various sensor inputs for enhanced performance."],
         "conclusion": []
     },
     {
-        "title": "Robotics Systems",
+        "title": "diff History for Neural Language Agents",
         "link": "https://arxiv.org/pdf/2312.07540",
-        "section": "Multimodal Approaches and Advanced Systems",
-        "published_date": "2023",
+        "section": "Multimodal Approaches",
+        "published_date": "2023-12",
         "description": ["Comprehensive study on various systems used in robotics, discussing different architectures and applications."],
         "conclusion": []
     },
     {
-        "title": "Advanced Robotics",
+        "title": "On Bringing Robots Home",
         "link": "https://arxiv.org/pdf/2311.16098",
-        "section": "Multimodal Approaches and Advanced Systems",
-        "published_date": "2023",
+        "section": "Multimodal Approaches",
+        "published_date": "2023-12",
         "description": ["Advanced topics in robotics, including new methodologies and technologies."],
+        "conclusion": []
+    },
+    {
+        "title": "RT-2: New model translates vision and language into action",
+        "link": "https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/",
+        "section": "Language Models",
+        "published_date": "2023-06",
+        "description": [],
         "conclusion": []
     }
 ]

@@ -4,7 +4,7 @@
         "link": "https://arxiv.org/pdf/2401.12202",
         "section": "Language Models",
         "published_date": "2024-01",
-        "description": [
+        "methodology": [
             "Vision-Language Models (VLMs) - object detection",
             "LangSam, CLIP - semantic memory",
             "AnyGrasp - grasp generation",
@@ -21,7 +21,7 @@
         "link": "https://www.microsoft.com/en-us/research/group/autonomous-systems-group-robotics/articles/chatgpt-for-robotics/",
         "section": "Language Models",
         "published_date": "2023-02",
-        "description": ["Demonstrates the utility of ChatGPT in understanding and executing robotic tasks."],
+        "methodology": ["Demonstrates the utility of ChatGPT in understanding and executing robotic tasks."],
         "conclusion": []
     },
     {
@@ -29,7 +29,7 @@
         "link": "https://palm-e.github.io/",
         "section": "Language Models",
         "published_date": "2023-06",
-        "description": ["Development of a multimodal language model integrating visual and language inputs for robotic tasks."],
+        "methodology": ["Development of a multimodal language model integrating visual and language inputs for robotic tasks."],
         "conclusion": []
     },
     {
@@ -37,7 +37,7 @@
         "link": "https://octo-models.github.io/",
         "section": "Multimodal Approaches",
         "published_date": "2024-05",
-        "description": ["Discusses various models and frameworks for robotics."],
+        "methodology": ["Discusses various models and frameworks for robotics."],
         "conclusion": []
     },
     {
@@ -45,7 +45,7 @@
         "link": "https://robotics-transformer1.github.io/",
         "section": "Transformer Models",
         "published_date": "2022-12",
-        "description": ["Explores the use of transformer models in robotic applications."],
+        "methodology": ["Explores the use of transformer models in robotic applications."],
         "conclusion": []
     },
     {
@@ -53,7 +53,7 @@
         "link": "https://robotics-transformer2.github.io/",
         "section": "Transformer Models",
         "published_date": "2023-07",
-        "description": ["Continues the discussion on transformer models in robotics."],
+        "methodology": ["Continues the discussion on transformer models in robotics."],
         "conclusion": []
     },
     {
@@ -61,15 +61,23 @@
         "link": "https://say-can.github.io/",
         "section": "Language Models",
         "published_date": "2022-04",
-        "description": ["Combines language understanding and task execution for robotic manipulation."],
-        "conclusion": []
+        "methodology": [
+            "LLM splits high-level instructions into sub-tasks",
+            "LLM scores skill likelihood based on robot capabilities and environment",
+            "Quantifies success probability using Affordance functions"
+        ],
+        "conclusion": [
+            "Improved robotics performance simply with enhanced LLMs",
+            "Success when scale to complex, long-horizon tasks",
+            "Simple integration of new skills, and with multilingual capabilities"
+        ]
     },
     {
         "title": "Hierarchical State Space Models for Continuous Sequence-to-Sequence Modeling",
         "link": "https://arxiv.org/pdf/2402.10211",
         "section": "Transformer Models",
         "published_date": "2024-02",
-        "description": ["Latest research on transformer models in robotics focusing on applications and results."],
+        "methodology": ["Latest research on transformer models in robotics focusing on applications and results."],
         "conclusion": []
     },
     {
@@ -77,7 +85,7 @@
         "link": "https://arxiv.org/pdf/2403.03181",
         "section": "Multimodal Approaches",
         "published_date": "2024-05",
-        "description": ["Exploration of multimodal approaches in robotics, combining various sensor inputs for enhanced performance."],
+        "methodology": ["Exploration of multimodal approaches in robotics, combining various sensor inputs for enhanced performance."],
         "conclusion": []
     },
     {
@@ -85,7 +93,7 @@
         "link": "https://arxiv.org/pdf/2312.07540",
         "section": "Multimodal Approaches",
         "published_date": "2023-12",
-        "description": ["Comprehensive study on various systems used in robotics, discussing different architectures and applications."],
+        "methodology": ["Comprehensive study on various systems used in robotics, discussing different architectures and applications."],
         "conclusion": []
     },
     {
@@ -93,7 +101,7 @@
         "link": "https://arxiv.org/pdf/2311.16098",
         "section": "Multimodal Approaches",
         "published_date": "2023-12",
-        "description": ["Advanced topics in robotics, including new methodologies and technologies."],
+        "methodology": ["Advanced topics in robotics, including new methodologies and technologies."],
         "conclusion": []
     },
     {
@@ -101,7 +109,7 @@
         "link": "https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/",
         "section": "Language Models",
         "published_date": "2023-06",
-        "description": [],
+        "methodology": [],
         "conclusion": []
     }
 ]

@@ -36,7 +36,7 @@
             try {
                 const response = await fetch('digests.json'); // Adjust path if necessary
                 const journalData = await response.json();
-
+                journalData.sort((a, b) => a.published_date.localeCompare(b.published_date));
                 const tableBody = document.getElementById('tableBody');
                 journalData.forEach(entry => {
                     const row = document.createElement('tr');

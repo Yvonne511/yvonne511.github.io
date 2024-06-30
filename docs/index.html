@@ -77,6 +77,7 @@
                     const response = await fetch('journals/digests.json');
                     const journalData = await response.json();
                     const contentArea = document.getElementById('researchContent');
+                    journalData.sort((a, b) => a.published_date.localeCompare(b.published_date));
     
                     // Grouping data by sections
                     const sections = journalData.reduce((acc, item) => {

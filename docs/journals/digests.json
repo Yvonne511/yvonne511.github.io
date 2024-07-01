@@ -38,8 +38,15 @@
         "paper":"https://arxiv.org/pdf/2405.12213",
         "section": "Multimodal Approaches",
         "published_date": "2024-05",
-        "methodology": ["Discusses various models and frameworks for robotics."],
-        "conclusion": []
+        "methodology": [
+            "Uses Open X-Embodiment dataset",
+            "Tokenizes task descriptions and observations with Language Encoder and CNN",
+            "Utilizes transformer backbone to process sequence of task and observation tokens",
+            "Diffusion process applied to the embeddings for the readout tokens"
+        ],
+        "conclusion": [
+            "Effective finetuning for new observation and action spaces with block-wise model architecture"
+        ]
     },
     {
         "title": "RT-1: Robotics Transformer",
@@ -118,14 +125,7 @@
         "link": "https://robotics-transformer-x.github.io/",
         "section": "Multimodal Approaches",
         "published_date": "2023-12",
-        "methodology": [
-            "Uses Open X-Embodiment dataset",
-            "Tokenizes task descriptions and observations with Language Encoder and CNN",
-            "Utilizes transformer backbone to process sequence of task and observation tokens",
-            "Diffusion process applied to the embeddings for the readout tokens"
-        ],
-        "conclusion": [
-            "Effective finetuning for new observation and action spaces with block-wise model architecture"
-        ]
+        "methodology": [],
+        "conclusion": []
     }
 ]

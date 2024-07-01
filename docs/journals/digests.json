@@ -36,7 +36,7 @@
         "title": "Octo: An Open-Source Generalist Robot Policy",
         "link": "https://octo-models.github.io/",
         "paper":"https://arxiv.org/pdf/2405.12213",
-        "section": "Multimodal Approaches",
+        "section": "Transformer",
         "published_date": "2024-05",
         "methodology": [
             "Uses Open X-Embodiment dataset",
@@ -59,7 +59,7 @@
     {
         "title": "RT-2: Vision-Language-Action Models",
         "link": "https://robotics-transformer2.github.io/",
-        "section": "Transformer Models",
+        "section": "Transformer",
         "published_date": "2023-07",
         "methodology": ["Continues the discussion on transformer models in robotics."],
         "conclusion": []
@@ -83,18 +83,29 @@
     {
         "title": "Hierarchical State Space Models for Continuous Sequence-to-Sequence Modeling",
         "link": "https://arxiv.org/pdf/2402.10211",
-        "section": "Transformer Models",
+        "section": "Transformer",
         "published_date": "2024-02",
         "methodology": ["Latest research on transformer models in robotics focusing on applications and results."],
         "conclusion": []
     },
     {
-        "title": "Behavior Generation with Latent Actions",
-        "link": "https://arxiv.org/pdf/2403.03181",
-        "section": "Multimodal Approaches",
+        "title": "VQ-BeT: Behavior Generation with Latent Actions",
+        "link": "https://sjlee.cc/vq-bet/",
+        "paper": "https://arxiv.org/pdf/2403.03181",
+        "section": "Transformer",
         "published_date": "2024-05",
-        "methodology": ["Exploration of multimodal approaches in robotics, combining various sensor inputs for enhanced performance."],
-        "conclusion": []
+        "methodology": [
+            "Vector-Quantized Behavior Transformer (VQ-BeT) for multimodal action prediction",
+            "Uses residual vector quantization for action discretization",
+            "Combines hierarchical vector quantization with transformer models",
+            "Handles conditional and unconditional behavior generation",
+            "Trained on seven environments: simulated manipulation, autonomous driving, robotics"
+        ],
+        "conclusion": [
+            "VQ-BeT achieves state-of-the-art performance in behavior generation",
+            "Improved multi-modality capture and inference speed over diffusion policies",
+            "Effective in both simulated and real-world tasks"
+        ]
     },
     {
         "title": "diff History for Neural Language Agents",

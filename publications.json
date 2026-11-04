@@ -1,6 +1,25 @@
 {
   "publications": [
     {
+      "title": "Hierarchical World Models with Implicit Dynamics",
+      "authors": [
+        "Gaoyue Zhou",
+        "Yvonne Wu",
+        "Zichen Jeff Cui",
+        "Nicolas Ballas",
+        "Mido Assran",
+        "Lerrel Pinto",
+        "Yann LeCun"
+      ],
+      "venue": "NeurIPS 2026",
+      "thumbnail": "images/thumbs/id_wm.png",
+      "selected": 1,
+      "award": "",
+      "links": {
+        "pdf": "https://arxiv.org/abs/2610.42146"
+      }
+    },
+    {
       "title": "Enhancing Spatial Reasoning in Vision-Language Models via Chain-of-Thought Prompting and Reinforcement Learning",
       "authors": [
         "Binbin Ji",
@@ -9,11 +28,11 @@
         "Yvonne Wu"
       ],
       "venue": "Preprint (2025)",
-      "thumbnail": "images/thumbs/1.jpg",
-      "selected": 1,
+      "thumbnail": "images/thumbs/cvbench.jpg",
+      "selected": 0,
       "award": "",
       "links": {
-        "pdf": "https://arxiv.org/pdf/2507.13362",
+        "pdf": "https://arxiv.org/abs/2507.13362",
         "code": "https://github.com/Yvonne511/spatial-vlm-investigator"
       }
     }

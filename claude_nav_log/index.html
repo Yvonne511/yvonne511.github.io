@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Nav Log</title>
+<meta name="description" content="Claude driving a real robot to find a table and park beside it: the agent's chat log side by side with the robot's command log and 3D trajectory.">
+<style>
+:root {
+  --bg: #ffffff; --panel: #f7f7f8; --text: #1f2328; --muted: #6b7280; --border: #e5e7eb;
+  --code-bg: #f3f4f6; --accent: #2563eb; --accent-soft: rgba(37,99,235,.10);
+  --warn: #b45309; --ok: #15803d; --err: #b91c1c; --user: #eef2ff;
+  --s0: #2563eb; --s1: #db2777; --future: .35;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1115; --panel: #161a20; --text: #e6e8eb; --muted: #9aa3ad; --border: #2a3038;
+    --code-bg: #1b2028; --accent: #60a5fa; --accent-soft: rgba(96,165,250,.14);
+    --warn: #f59e0b; --ok: #4ade80; --err: #f87171; --user: #1e2433;
+    --s0: #60a5fa; --s1: #f472b6;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1115; --panel: #161a20; --text: #e6e8eb; --muted: #9aa3ad; --border: #2a3038;
+  --code-bg: #1b2028; --accent: #60a5fa; --accent-soft: rgba(96,165,250,.14);
+  --warn: #f59e0b; --ok: #4ade80; --err: #f87171; --user: #1e2433;
+  --s0: #60a5fa; --s1: #f472b6;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+code, pre, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+a { color: var(--accent); }
+header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; }
+header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+header p { margin: 0; color: var(--muted); font-size: 13px; flex: 1 1 320px; }
+.timeline { display: flex; align-items: center; gap: 10px; flex: 1 1 100%; }
+.timeline input { flex: 1; accent-color: var(--accent); }
+button { font: inherit; font-size: 13px; color: var(--text); background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+#clock { min-width: 120px; color: var(--muted); }
+
+main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); height: calc(100vh - var(--hdr, 96px)); }
+.col { min-height: 0; display: flex; flex-direction: column; }
+.col + .col { border-left: 1px solid var(--border); }
+.col h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; padding: 8px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; }
+.scroll { overflow-y: auto; min-height: 0; flex: 1; }
+
+/* chat */
+#chat { padding: 12px 16px 50vh; }
+.step { margin: 0 0 8px; border-left: 3px solid transparent; padding-left: 8px; transition: border-color .15s; }
+.step.active { border-left-color: var(--accent); }
+.who { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+.user .bubble { background: var(--user); border-radius: 8px; padding: 8px 12px; white-space: pre-wrap; }
+.text .md > :first-child { margin-top: 0; } .text .md > :last-child { margin-bottom: 0; }
+.text .md pre { background: var(--code-bg); padding: 8px; border-radius: 6px; overflow-x: auto; }
+.text .md code { background: var(--code-bg); padding: 1px 4px; border-radius: 4px; }
+.text .md pre code { padding: 0; background: none; }
+.text .md table { border-collapse: collapse; } .text .md td, .text .md th { border: 1px solid var(--border); padding: 2px 6px; }
+.thinking { color: var(--muted); font-size: 12px; font-style: italic; }
+details.tool { border: 1px solid var(--border); border-radius: 6px; background: var(--panel); }
+details.tool > summary { list-style: none; cursor: pointer; padding: 5px 10px; display: flex; gap: 8px; align-items: baseline; }
+details.tool > summary::-webkit-details-marker { display: none; }
+details.tool > summary::before { content: "▸"; color: var(--muted); }
+details.tool[open] > summary::before { content: "▾"; }
+.tname { font-weight: 600; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+.ttitle { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badge { font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 10px; padding: 0 7px; white-space: nowrap; }
+.badge.err { color: var(--err); background: transparent; border: 1px solid var(--err); }
+.tbody { padding: 0 10px 8px; }
+.tbody .lbl { font-size: 11px; color: var(--muted); margin: 6px 0 2px; }
+pre.box { margin: 0; background: var(--code-bg); border-radius: 4px; padding: 6px 8px; white-space: pre-wrap; word-break: break-word; max-height: 360px; overflow: auto; }
+.readimg { display: block; margin: 6px 0 2px 21px; max-width: min(320px, 90%); border-radius: 4px; border: 1px solid var(--border); }
+.plan ul { margin: 4px 0 0; padding-left: 20px; } .plan li { list-style: none; margin-left: -18px; }
+.plan .st { display: inline-block; width: 18px; color: var(--muted); }
+.recap { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; }
+
+/* robot */
+#viewWrap { position: relative; height: 33%; min-height: 200px; border-bottom: 1px solid var(--border); background: var(--panel); }
+#view { position: absolute; inset: 0; }
+#legend { position: absolute; left: 8px; bottom: 6px; font-size: 11px; color: var(--muted); background: color-mix(in srgb, var(--bg) 80%, transparent); border-radius: 6px; padding: 4px 8px; pointer-events: none; line-height: 1.6; }
+#legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; margin-right: 4px; }
+#viewBtns { position: absolute; right: 8px; top: 8px; display: flex; gap: 6px; }
+#now { padding: 8px 16px; border-bottom: 1px solid var(--border); font-size: 13px; display: flex; gap: 10px; align-items: flex-start; min-height: 64px; }
+#now img { height: 64px; border-radius: 4px; border: 1px solid var(--border); cursor: zoom-in; }
+#now .sm { color: var(--muted); font-size: 12px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rrow .th img, .readimg { cursor: zoom-in; }
+#zoom { position: fixed; inset: 0; background: #000; display: none; z-index: 10; cursor: zoom-out; }
+#zoom img { width: 100vw; height: 100vh; object-fit: contain; }
+#zoom span { position: absolute; top: 10px; right: 14px; color: #fff; font-size: 13px; opacity: .8; }
+#now .c { flex: 1; min-width: 0; }
+#robot { padding: 8px 16px 40vh; }
+.rrow { border-bottom: 1px solid var(--border); padding: 6px 0; cursor: pointer; }
+.rrow.future { opacity: var(--future); }
+.rrow.current { background: var(--accent-soft); margin: 0 -16px; padding: 6px 16px; }
+.rrow .line { display: flex; gap: 8px; align-items: baseline; }
+.rrow .tm { color: var(--muted); min-width: 44px; }
+.rrow .ep { font-weight: 600; }
+.rrow .ep.robot { color: var(--ok); }
+.rrow .sum { color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rrow .cm { margin: 2px 0 0 52px; font-style: italic; }
+.rrow .warn { margin: 2px 0 0 52px; color: var(--warn); font-size: 12px; }
+.rrow .th { margin: 4px 0 0 52px; display: flex; gap: 6px; flex-wrap: wrap; }
+.rrow .th img { height: 72px; border-radius: 4px; border: 1px solid var(--border); }
+.rrow .raw { margin: 6px 0 0 52px; display: none; }
+.rrow.open .raw { display: block; }
+.sess { margin: 10px 0 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.sess i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+
+@media (max-width: 860px) {
+  main { display: block; height: auto; }
+  .col + .col { border-left: 0; border-top: 1px solid var(--border); }
+  .col.robotcol { position: sticky; top: 0; z-index: 2; background: var(--bg); }
+  #viewWrap { height: 38vh; }
+  #now, #robotHdr, #robotList { display: none; }
+  .scroll { overflow: visible; }
+  #chat { padding-bottom: 40vh; }
+  main { display: flex; flex-direction: column-reverse; }
+}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <h1>Claude × robot: find the table, park beside it</h1>
+  <p>Claude (Claude Code) drives a swerve-drive robot over plain HTTP: it looks, measures in 3D, plans, moves and checks again. Left: the agent's session (expand any step to see the exact command and output). Right: what the robot received and where it went. Scroll either side; both stay in sync. Plain-text version: <a href="log.md">log.md</a>.</p>
+  <div class="timeline">
+    <button id="play" title="Replay">▶ Replay</button>
+    <input id="slider" type="range" min="0" max="1000" value="0" aria-label="Timeline">
+    <span id="clock" class="mono"></span>
+    <button id="theme" title="Toggle light / dark">◐</button>
+  </div>
+</header>
+<main>
+  <section class="col">
+    <h2><span>Claude session</span><span id="chatCount"></span></h2>
+    <div class="scroll" id="chatScroll"><div id="chat"></div></div>
+  </section>
+  <section class="col robotcol">
+    <h2><span>Robot: 3D trajectory (world frame, 0.5 m grid)</span><span id="robotCount"></span></h2>
+    <div id="viewWrap">
+      <div id="view"></div>
+      <div id="viewBtns"><button id="topBtn">Top</button><button id="persBtn">3D</button></div>
+      <div id="legend"></div>
+    </div>
+    <div id="now"></div>
+    <h2 id="robotHdr"><span>Robot command log</span><span>click a row for raw JSON</span></h2>
+    <div class="scroll" id="robotList"><div id="robot"></div></div>
+  </section>
+</main>
+
+<div id="zoom"><img alt=""><span>click or Esc to close</span></div>
+<script src="data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(() => {
+const D = window.NAVLOG;
+const $ = s => document.querySelector(s);
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmtT = t => { const s = Math.max(0, t - D.t0); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`; };
+const f2 = v => (typeof v === 'number' ? v.toFixed(2) : v);
+const xyz = a => a ? `(${a.slice(0, 3).map(f2).join(', ')})` : '';
+const robotByN = new Map(D.robot.map(r => [r.n, r]));
+
+// header height for full-height layout
+const setHdr = () => document.documentElement.style.setProperty('--hdr', $('#hdr').offsetHeight + 'px');
+addEventListener('resize', setHdr); setHdr();
+
+// theme toggle
+$('#theme').onclick = () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.dataset.theme = cur === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('navlog-theme', document.documentElement.dataset.theme); } catch (e) {}
+  applySceneTheme();
+};
+try { const t = localStorage.getItem('navlog-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+
+// ------------------------------------------------------------------ chat
+const ENDPOINT = { session: 'POST /session', enable: 'POST /enable', look: 'POST /look', query_region: 'POST /query/region',
+  query_plane: 'POST /query/plane', plan_check: 'POST /plan/check', plan_approach: 'POST /plan/approach', goal: 'POST /goal',
+  event: 'robot event', note: 'POST /memory/note', place: 'POST /memory/place', disable: 'POST /disable',
+  session_end: 'DELETE /session', stop: 'POST /stop', estop: 'POST /estop' };
+const md = s => (window.marked && window.DOMPurify) ? DOMPurify.sanitize(marked.parse(s)) : `<p style="white-space:pre-wrap">${esc(s)}</p>`;
+const chat = $('#chat');
+const stepEls = [];
+const PLAN_ICON = { completed: '✓', in_progress: '▸', pending: '○' };
+
+D.steps.forEach(s => {
+  const e = el('div', `step ${s.type}`);
+  e.dataset.i = s.i;
+  if (s.type === 'user') {
+    e.append(el('div', 'who', `You · ${fmtT(s.t0)}`));
+    if (s.user_image) {
+      const img = el('img', 'readimg'); img.src = s.user_image; img.alt = 'image attached by the user'; img.style.marginLeft = '0';
+      e.append(img);
+    }
+    if (s.text) e.append(el('div', 'bubble', esc(s.text)));
+  } else if (s.type === 'text') {
+    e.append(el('div', 'who', `Claude · ${fmtT(s.t0)}`), el('div', 'md', md(s.text)));
+  } else if (s.type === 'thinking') {
+    e.append(el('div', 'thinking', `· thought${s.count > 1 ? ` (${s.count}×)` : ''}`));
+  } else if (s.name === 'plan' || s.name === 'wrap_up') {
+    const p = s.plan || {};
+    if (p.items) {
+      const ul = p.items.map(it => `<li><span class="st">${PLAN_ICON[it.status] || '○'}</span>${esc(it.content)}</li>`).join('');
+      e.append(el('div', 'who', `Claude · plan · ${fmtT(s.t0)}`), el('div', 'plan recap', `<ul>${ul}</ul>`));
+    } else if (p.recap) {
+      e.append(el('div', 'who', `Claude · wrap-up · ${fmtT(s.t0)}`), el('div', 'recap', esc(p.recap) + (p.ask ? `<br><i>${esc(p.ask)}</i>` : '')));
+    } else { return; }
+  } else {
+    const d = el('details', 'tool');
+    const n = s.robot.length;
+    const badge = n ? `<span class="badge">${n} robot call${n > 1 ? 's' : ''}</span>` : '';
+    const err = s.is_error ? '<span class="badge err">error</span>' : '';
+    const bg = s.background ? '<span class="badge">background</span>' : '';
+    d.append(el('summary', '', `<span class="tname">${esc(s.name)}</span><span class="ttitle">${esc(s.title || s.command.split('\n')[0])}</span>${bg}${err}${badge}`));
+    const body = el('div', 'tbody');
+    body.append(el('div', 'lbl', s.name === 'Read' ? 'file' : 'command'), el('pre', 'box', esc(s.command)));
+    if (s.output) body.append(el('div', 'lbl', 'output'), el('pre', 'box', esc(s.output)));
+    if (n) {
+      const eps = s.robot.map(k => robotByN.get(k)).map(r => `${fmtT(r.t)}  ${ENDPOINT[r.kind] || r.kind}${r.comment ? '  # ' + r.comment : ''}`).join('\n');
+      body.append(el('div', 'lbl', 'robot received'), el('pre', 'box', esc(eps)));
+    }
+    d.append(body);
+    e.append(d);
+    if (s.image) {
+      const img = el('img', 'readimg'); img.src = 'thumbs/' + s.image; img.alt = 'image Claude looked at'; img.loading = 'lazy';
+      e.append(img);
+    }
+  }
+  chat.append(e); stepEls[s.i] = e;
+});
+$('#chatCount').textContent = `${D.steps.filter(s => s.type === 'tool').length} tool calls`;
+
+// ------------------------------------------------------------------ robot list
+const robotList = $('#robot');
+const rowEls = new Map();
+const summary = r => {
+  const q = r.request || {}, p = r.reply || {};
+  switch (r.kind) {
+    case 'session': return `agent ${q.agent || ''}, profile ${p.profile || ''}, max ${p.caps?.max_speed ?? '?'} m/s`;
+    case 'look': return `${p.snapshot} · pose ${xyz(p.pose_world)} · depth ${p.depth_fraction}`;
+    case 'query_region': return `${p.query} on ${p.snapshot} · ${Object.keys(q.select || {})[0] || ''} · centroid ${xyz(p.world?.centroid)} · range ${f2(p.range_m?.[1])} m`;
+    case 'query_plane': return `${p.query} on ${p.snapshot} · ${p.orientation || ''} ${f2(p.width_m)}×${f2(p.height_m)} m · inliers ${f2(p.inlier_fraction)} · centre ${xyz(p.world?.centre)}`;
+    case 'plan_check': return `${q.frame} (${f2(q.x)}, ${f2(q.y)}) · clearance ${f2(p.check?.min_clearance_m)} m · seen ${Math.round((p.check?.verified_fraction || 0) * 100)}%`;
+    case 'goal': return `goal ${p.goal_id} · ${q.frame} (${f2(q.x)}, ${f2(q.y)}, θ ${f2(q.theta)}) · ${f2(p.goal?.distance)} m`;
+    case 'event': return `${p.message || ''}${p.duration_s ? ` in ${f2(p.duration_s)} s` : ''}`;
+    case 'note': return q.text || '';
+    case 'place': return `${p.place} at (${f2(p.x)}, ${f2(p.y)})`;
+    default: return '';
+  }
+};
+let lastSess = -1;
+D.robot.forEach(r => {
+  if (r.session !== lastSess) {
+    lastSess = r.session;
+    const s = D.sessions[r.session];
+    robotList.append(el('div', 'sess', `<i style="background:var(--s${r.session % 2})"></i>Robot session ${s.id} · profile ${esc(s.profile)}`));
+  }
+  const e = el('div', 'rrow');
+  const warns = (r.reply?.warnings || []);
+  e.innerHTML = `<div class="line mono"><span class="tm">${fmtT(r.t)}</span><span class="ep ${r.actor === 'robot' ? 'robot' : ''}">${esc(ENDPOINT[r.kind] || r.kind)}</span><span class="sum">${esc(summary(r))}</span></div>`
+    + (r.comment ? `<div class="cm">“${esc(r.comment)}”</div>` : '')
+    + (warns.length ? `<div class="warn">⚠ ${warns.map(esc).join('<br>⚠ ')}</div>` : '')
+    + (r.thumbs.length ? `<div class="th">${r.thumbs.map(t => `<img loading="lazy" src="thumbs/${esc(t)}" alt="">`).join('')}</div>` : '');
+  const raw = el('div', 'raw');
+  raw.append(el('div', 'lbl mono', 'request'), el('pre', 'box', esc(JSON.stringify(r.request, null, 1))),
+             el('div', 'lbl mono', 'reply'), el('pre', 'box', esc(JSON.stringify(r.reply, null, 1))));
+  e.append(raw);
+  e.onclick = ev => {
+    if (ev.target.closest('.raw')) return;
+    e.classList.toggle('open');
+    setT(r.t, 'robot');
+    const se = stepEls[r.step];
+    if (se) scrollInto($('#chatScroll'), se);
+  };
+  robotList.append(e); rowEls.set(r.n, e);
+});
+$('#robotCount').textContent = `${D.robot.length} turns`;
+
+// ------------------------------------------------------------------ 3D scene
+const view = $('#view');
+let renderer, scene, camera, controls, robotMesh, pathLine, pathGeom, objs = [], track = [];
+const sceneOK = !!window.THREE;
+function hexOf(v) { return new THREE.Color(css(v) || '#888'); }
+function buildScene() {
+  if (!sceneOK) { view.innerHTML = '<p style="padding:16px;color:var(--muted)">3D view needs three.js (offline?).</p>'; return; }
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  view.append(renderer.domElement);
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(45, 1, 0.05, 200);
+  camera.up.set(0, 0, 1);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.6); dl.position.set(3, -4, 6); scene.add(dl);
+
+  // pose track: looks / events give poses; goals give start poses
+  D.robot.forEach(r => {
+    const g = r.geo || {};
+    if (g.pose) track.push({ t: r.t, p: g.pose, s: r.session });
+    if (g.from) track.push({ t: r.t, p: g.from, s: r.session });
+  });
+  track.sort((a, b) => a.t - b.t);
+
+  // bounds
+  const pts = [];
+  track.forEach(k => pts.push(k.p));
+  D.robot.forEach(r => { const g = r.geo || {}; if (g.point) pts.push(g.point); if (g.target) pts.push(g.target); (g.corners || []).forEach(c => pts.push(c)); });
+  const bx = pts.map(p => p[0]), by = pts.map(p => p[1]);
+  const bb = { x0: Math.min(...bx) - 0.8, x1: Math.max(...bx) + 0.8, y0: Math.min(...by) - 0.8, y1: Math.max(...by) + 0.8 };
+  const cx = (bb.x0 + bb.x1) / 2, cy = (bb.y0 + bb.y1) / 2, span = Math.max(bb.x1 - bb.x0, bb.y1 - bb.y0);
+  const size = Math.ceil(span / 0.5 + 2) * 0.5;
+  const grid = new THREE.GridHelper(size, Math.round(size / 0.5));
+  grid.rotation.x = Math.PI / 2; grid.position.set(Math.round(cx * 2) / 2, Math.round(cy * 2) / 2, 0);
+  grid.userData.kind = 'grid'; scene.add(grid);
+  const axes = new THREE.AxesHelper(0.5); axes.position.set(bb.x0 + 0.2, bb.y0 + 0.2, 0.002); scene.add(axes);
+  scene.userData.center = new THREE.Vector3(cx, cy, 0.3); scene.userData.span = span;
+
+  // path (vertex-coloured by session)
+  const pos = [], col = [];
+  track.forEach(k => { pos.push(k.p[0], k.p[1], 0.02); col.push(0, 0, 0); });
+  pathGeom = new THREE.BufferGeometry();
+  pathGeom.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  pathGeom.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  pathLine = new THREE.Line(pathGeom, new THREE.LineBasicMaterial({ vertexColors: true }));
+  scene.add(pathLine);
+  const ghost = new THREE.Line(pathGeom.clone(), new THREE.LineDashedMaterial({ color: 0x888888, dashSize: 0.05, gapSize: 0.05, transparent: true, opacity: 0.5 }));
+  ghost.computeLineDistances(); ghost.userData.kind = 'ghost'; scene.add(ghost);
+
+  // robot body
+  robotMesh = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.25), new THREE.MeshLambertMaterial({ color: 0x9ca3af, transparent: true, opacity: 0.85 }));
+  body.position.z = 0.125; robotMesh.add(body);
+  const nose = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.2, 16), new THREE.MeshLambertMaterial({ color: 0xf59e0b }));
+  nose.rotation.z = -Math.PI / 2; nose.position.set(0.38, 0, 0.2); robotMesh.add(nose);
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.9), new THREE.MeshLambertMaterial({ color: 0x6b7280 }));
+  mast.rotation.x = Math.PI / 2; mast.position.set(0.2, 0, 0.7); robotMesh.add(mast);
+  const cam = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.05), new THREE.MeshLambertMaterial({ color: 0x111827 }));
+  cam.position.set(0.22, 0, 1.13); robotMesh.add(cam);
+  scene.add(robotMesh);
+
+  // per-turn objects
+  D.robot.forEach(r => {
+    const g = r.geo || {}; const sc = `--s${r.session % 2}`;
+    if (g.point && r.kind === 'query_region') {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.045, 14, 10), new THREE.MeshLambertMaterial({ color: hexOf(sc) }));
+      m.position.set(...g.point); objs.push({ t: r.t, n: r.n, obj: m, kind: 'q', sc }); scene.add(m);
+      const stem = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(g.point[0], g.point[1], 0), new THREE.Vector3(...g.point)]),
+        new THREE.LineBasicMaterial({ color: hexOf(sc), transparent: true, opacity: 0.5 }));
+      objs.push({ t: r.t, n: r.n, obj: stem, kind: 'stem', sc }); scene.add(stem);
+    }
+    if (g.corners && g.corners.length >= 3) {
+      const v = g.corners.map(c => new THREE.Vector3(...c));
+      const geo = new THREE.BufferGeometry().setFromPoints([v[0], v[1], v[2], v[0], v[2], v[3] || v[2]]);
+      geo.computeVertexNormals();
+      const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.35, side: THREE.DoubleSide }));
+      const edge = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(v), new THREE.LineBasicMaterial({ color: 0x16a34a }));
+      objs.push({ t: r.t, n: r.n, obj: m, kind: 'plane' }, { t: r.t, n: r.n, obj: edge, kind: 'plane' }); scene.add(m, edge);
+    }
+    if (g.target) {
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.1, 0.14, 32), new THREE.MeshBasicMaterial({ color: r.kind === 'goal' ? 0xf59e0b : 0x9ca3af, side: THREE.DoubleSide, transparent: true, opacity: r.kind === 'goal' ? 0.95 : 0.6 }));
+      ring.position.set(g.target[0], g.target[1], 0.01);
+      const hd = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.22, 0, 0)]), new THREE.LineBasicMaterial({ color: 0xf59e0b }));
+      hd.position.copy(ring.position); hd.rotation.z = g.target[2] || 0;
+      objs.push({ t: r.t, n: r.n, obj: ring, kind: 'goal' }, { t: r.t, n: r.n, obj: hd, kind: 'goal' }); scene.add(ring, hd);
+    }
+    if (g.place) {
+      const flag = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.6), new THREE.MeshLambertMaterial({ color: 0x16a34a }));
+      flag.rotation.x = Math.PI / 2; flag.position.set(g.place[0], g.place[1], 0.3);
+      objs.push({ t: r.t, n: r.n, obj: flag, kind: 'place' }); scene.add(flag);
+    }
+  });
+  setTop();
+  applySceneTheme();
+  const ro = new ResizeObserver(resize); ro.observe(view); resize();
+  (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+}
+function resize() { if (!renderer) return; const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+function setTop() { const c = scene.userData.center, s = scene.userData.span; camera.position.set(c.x, c.y - 0.01, s * 1.25); controls.target.copy(c); }
+function setPers() { const c = scene.userData.center, s = scene.userData.span; camera.position.set(c.x - s * 0.35, c.y - s * 0.55, s * 0.45); controls.target.copy(c); }
+$('#topBtn').onclick = () => sceneOK && setTop();
+$('#persBtn').onclick = () => sceneOK && setPers();
+function applySceneTheme() {
+  if (!sceneOK || !scene) return;
+  scene.traverse(o => {
+    if (o.userData.kind === 'grid') { o.material.color = hexOf('--muted'); o.material.transparent = true; o.material.opacity = 0.35; }
+  });
+  const colors = pathGeom.attributes.color;
+  track.forEach((k, i) => { const c = hexOf(`--s${k.s % 2}`); colors.setXYZ(i, c.r, c.g, c.b); });
+  colors.needsUpdate = true;
+  objs.forEach(o => { if (o.sc) o.obj.material.color = hexOf(o.sc); });
+  $('#legend').innerHTML = D.sessions.map((s, i) => `<i style="background:var(--s${i % 2})"></i>session ${i + 1} path &amp; 3D queries`).join('<br>')
+    + '<br><i style="background:#f59e0b"></i>goals &nbsp;<i style="background:#22c55e"></i>fitted planes';
+}
+function poseAt(t) {
+  if (!track.length) return null;
+  if (t <= track[0].t) return track[0].p;
+  for (let i = 1; i < track.length; i++) {
+    if (t <= track[i].t) {
+      const a = track[i - 1], b = track[i];
+      // between a goal start and the event that ends it the robot moved; elsewhere it stood still
+      const moving = D.robot.some(r => r.kind === 'goal' && Math.abs(r.t - a.t) < 0.01);
+      if (!moving) return a.p;
+      const u = (t - a.t) / Math.max(1e-6, b.t - a.t);
+      return [0, 1, 2].map(j => a.p[j] + (b.p[j] - a.p[j]) * u);
+    }
+  }
+  return track[track.length - 1].p;
+}
+function updateScene(T, curN) {
+  if (!sceneOK || !scene) return;
+  const p = poseAt(T);
+  if (p) { robotMesh.position.set(p[0], p[1], 0); robotMesh.rotation.z = p[2]; }
+  const k = track.filter(x => x.t <= T).length;
+  pathGeom.setDrawRange(0, k + (p ? 0 : 0));
+  // append live point so the line reaches the robot
+  objs.forEach(o => {
+    const vis = o.t <= T;
+    o.obj.visible = vis;
+    if (o.kind === 'q') o.obj.scale.setScalar(o.n === curN ? 2.2 : 1);
+  });
+}
+
+// ------------------------------------------------------------------ sync
+let T = D.t0, source = null, playing = false;
+const slider = $('#slider');
+const toSlider = t => Math.round((t - D.t0) / (D.t1 - D.t0) * 1000);
+function scrollInto(container, e) {
+  const top = container.scrollTop + e.getBoundingClientRect().top - container.getBoundingClientRect().top - 40;
+  container.scrollTo({ top, behavior: 'smooth' });
+}
+function setT(t, from) {
+  T = Math.min(D.t1, Math.max(D.t0, t)); source = from;
+  slider.value = toSlider(T);
+  $('#clock').textContent = `${fmtT(T)} / ${fmtT(D.t1)}`;
+  // robot rows
+  let cur = null;
+  D.robot.forEach(r => { const e = rowEls.get(r.n); const fut = r.t > T + 0.01; e.classList.toggle('future', fut); e.classList.remove('current'); if (!fut) cur = r; });
+  if (cur) {
+    const ce = rowEls.get(cur.n); ce.classList.add('current');
+    if (from !== 'robot') scrollInto($('#robotList'), ce);
+    const th = cur.thumbs.map(x => `<img src="thumbs/${esc(x)}" alt="">`).join('');
+    const lastThumbRow = [...D.robot].filter(r => r.t <= T && r.thumbs.length).pop();
+    const imgs = th || (lastThumbRow ? lastThumbRow.thumbs.map(x => `<img src="thumbs/${esc(x)}" alt="">`).join('') : '');
+    const sm = summary(cur);
+    $('#now').innerHTML = `${imgs}<div class="c"><div class="mono"><b>${esc(ENDPOINT[cur.kind] || cur.kind)}</b> · ${fmtT(cur.t)}</div>${cur.comment ? `<i>“${esc(cur.comment)}”</i>` : ''}${sm ? `<div class="sm mono">${esc(sm)}</div>` : ''}</div>`;
+  } else {
+    $('#now').innerHTML = '<span style="color:var(--muted)">Robot not connected yet; Claude is reading the API guide.</span>';
+  }
+  // chat step
+  let si = 0; D.steps.forEach(s => { if (s.t0 <= T + 0.01) si = s.i; });
+  stepEls.forEach(e => e && e.classList.remove('active'));
+  const se = stepEls[si] || stepEls.filter(Boolean)[0];
+  se && se.classList.add('active');
+  if (from !== 'chat' && se) scrollInto($('#chatScroll'), se);
+  updateScene(T, cur && cur.n);
+}
+// chat scroll -> time
+let scrollTimer;
+$('#chatScroll').addEventListener('scroll', () => {
+  if (playing || source === 'programmatic') return;
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(() => {
+    const sc = $('#chatScroll'), y = sc.getBoundingClientRect().top + 60;
+    let best = null;
+    for (const e of stepEls) { if (!e) continue; if (e.getBoundingClientRect().top <= y) best = e; else break; }
+    if (best) { const s = D.steps[+best.dataset.i]; setT(s.t1, 'chat'); }
+  }, 120);
+}, { passive: true });
+chat.addEventListener('click', ev => {
+  const se = ev.target.closest('.step'); if (!se) return;
+  const s = D.steps[+se.dataset.i]; setT(s.t1, 'chat');
+});
+slider.addEventListener('input', () => { stop(); setT(D.t0 + slider.value / 1000 * (D.t1 - D.t0), 'slider'); });
+let raf, last;
+function stop() { playing = false; cancelAnimationFrame(raf); $('#play').textContent = '▶ Replay'; }
+$('#play').onclick = () => {
+  if (playing) return stop();
+  if (T >= D.t1 - 0.5) T = D.t0;
+  playing = true; $('#play').textContent = '❚❚ Pause'; last = performance.now();
+  const step = now => {
+    if (!playing) return;
+    const dt = (now - last) / 1000; last = now;
+    setT(T + dt * 15, 'play');          // 15x real time
+    if (T >= D.t1) return stop();
+    raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+};
+
+// click any thumbnail to enlarge
+document.addEventListener('click', ev => {
+  const img = ev.target.closest('#now img, .rrow .th img, .readimg');
+  const z = $('#zoom');
+  if (img) {
+    ev.stopPropagation(); ev.preventDefault();
+    const file = img.getAttribute('src').replace(/^thumbs\//, '');
+    z.querySelector('img').src = (D.full && D.full[file]) || img.src;
+    z.style.display = 'block';
+  } else if (ev.target.closest('#zoom')) z.style.display = 'none';
+}, true);
+addEventListener('keydown', ev => { if (ev.key === 'Escape') $('#zoom').style.display = 'none'; });
+
+buildScene();
+setT(D.t0, 'init');
+})();
+</script>
+</body>
+</html>
